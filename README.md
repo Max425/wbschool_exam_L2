@@ -1,4 +1,7 @@
 # WB Tech: level # 2 (Golang)
+
+[Условия](https://docs.google.com/document/d/1wJkKlc3f84zfL13inkeASsCj7KUvBidiWxuQhZJhxDQ/edit?usp=sharing)
+
 ## Как делать задания:
 Никаких устных решений — только код. Одно решение — один файл с хорошо откомментированным кодом. Каждое решение или невозможность решения надо объяснить.
 
