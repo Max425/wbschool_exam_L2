@@ -1,8 +1,9 @@
 package main
 
 import (
-	"reflect"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestFindAnagrams(t *testing.T) {
@@ -41,9 +42,7 @@ func TestFindAnagrams(t *testing.T) {
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			result := FindAnagrams(test.input)
-			if !reflect.DeepEqual(result, test.expected) {
-				t.Errorf("Test case '%s' failed. Expected %v, got %v", test.name, test.expected, result)
-			}
+			assert.Equal(t, test.expected, result, "Unexpected result")
 		})
 	}
 }

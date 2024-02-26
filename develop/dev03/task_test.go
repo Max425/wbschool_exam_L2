@@ -1,7 +1,7 @@
 package main
 
 import (
-	"reflect"
+	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
@@ -41,9 +41,7 @@ func TestSort(t *testing.T) {
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			result := Sort(test.flags, test.input)
-			if !reflect.DeepEqual(result, test.expected) {
-				t.Errorf("Expected %v, but got %v", test.expected, result)
-			}
+			assert.Equal(t, test.expected, result)
 		})
 	}
 }

@@ -1,0 +1,5 @@
+Hello, world!
+This is an example text for testing.
+Line number 3.
+Another line here.
+EXample
