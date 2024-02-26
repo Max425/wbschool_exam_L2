@@ -1,9 +1,9 @@
 package handler
 
 import (
-	"encoding/json"
 	"github.com/Max425/wbschool_exam_L2/tree/main/develop/dev11/pkg/model/core"
 	"github.com/Max425/wbschool_exam_L2/tree/main/develop/dev11/pkg/model/dto"
+	"io"
 	"net/http"
 	"time"
 )
@@ -21,18 +21,18 @@ func (h *Handler) createEvent(w http.ResponseWriter, r *http.Request) {
 		dto.NewErrorClientResponseDto(r.Context(), w, http.StatusMethodNotAllowed, http.StatusText(http.StatusMethodNotAllowed))
 		return
 	}
-
-	var event core.Event
-	if err := json.NewDecoder(r.Body).Decode(&event); err != nil {
-		dto.NewErrorClientResponseDto(r.Context(), w, http.StatusBadRequest, err.Error())
-		return
-	}
-	data, err := time.Parse("2006-01-02", event.StringDate)
+	body, err := io.ReadAll(r.Body)
 	if err != nil {
 		dto.NewErrorClientResponseDto(r.Context(), w, http.StatusBadRequest, err.Error())
 		return
 	}
-	event.Date = data
+	var event core.Event
+	err = event.UnmarshalJSON(body)
+	if err != nil {
+		dto.NewErrorClientResponseDto(r.Context(), w, http.StatusBadRequest, "invalid input body")
+		return
+	}
+
 	id, err := h.services.CreateEvent(&event)
 	if err != nil {
 		dto.NewErrorClientResponseDto(r.Context(), w, http.StatusInternalServerError, err.Error())
@@ -54,14 +54,19 @@ func (h *Handler) updateEvent(w http.ResponseWriter, r *http.Request) {
 		dto.NewErrorClientResponseDto(r.Context(), w, http.StatusMethodNotAllowed, http.StatusText(http.StatusMethodNotAllowed))
 		return
 	}
-
-	var event core.Event
-	if err := json.NewDecoder(r.Body).Decode(&event); err != nil {
+	body, err := io.ReadAll(r.Body)
+	if err != nil {
 		dto.NewErrorClientResponseDto(r.Context(), w, http.StatusBadRequest, err.Error())
 		return
 	}
+	var event core.Event
+	err = event.UnmarshalJSON(body)
+	if err != nil {
+		dto.NewErrorClientResponseDto(r.Context(), w, http.StatusBadRequest, "invalid input body")
+		return
+	}
 
-	err := h.services.UpdateEvent(&event)
+	err = h.services.UpdateEvent(&event)
 	if err != nil {
 		dto.NewErrorClientResponseDto(r.Context(), w, http.StatusInternalServerError, err.Error())
 		return
@@ -83,14 +88,19 @@ func (h *Handler) deleteEvent(w http.ResponseWriter, r *http.Request) {
 		dto.NewErrorClientResponseDto(r.Context(), w, http.StatusMethodNotAllowed, http.StatusText(http.StatusMethodNotAllowed))
 		return
 	}
-
-	var event core.Event
-	if err := json.NewDecoder(r.Body).Decode(&event); err != nil {
+	body, err := io.ReadAll(r.Body)
+	if err != nil {
 		dto.NewErrorClientResponseDto(r.Context(), w, http.StatusBadRequest, err.Error())
 		return
 	}
+	var event core.Event
+	err = event.UnmarshalJSON(body)
+	if err != nil {
+		dto.NewErrorClientResponseDto(r.Context(), w, http.StatusBadRequest, "invalid input body")
+		return
+	}
 
-	err := h.services.DeleteEvent(event.ID)
+	err = h.services.DeleteEvent(event.ID)
 	if err != nil {
 		dto.NewErrorClientResponseDto(r.Context(), w, http.StatusInternalServerError, err.Error())
 		return
