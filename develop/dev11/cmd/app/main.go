@@ -1,5 +1,16 @@
 package main
 
+import (
+	"context"
+	"fmt"
+	"github.com/spf13/viper"
+	"go.uber.org/zap"
+	"log"
+	"os"
+	"os/signal"
+	"syscall"
+)
+
 /*
 === HTTP server ===
 
@@ -22,6 +33,59 @@ package main
 	4. Код должен проходить проверки go vet и golint.
 */
 
-func main() {
+// @title WB API
+// @version 1.0
+// @description API Server for WB-level-0 Application
 
+// @host localhost:8000
+// @BasePath /
+func main() {
+	initial.InitConfig()
+	logger, err := initial.InitLogger()
+	if err != nil {
+		log.Fatal(err)
+	}
+	logger.Info("Starting server...")
+	defer logger.Sync()
+
+	ctx := context.Background()
+
+	db, err := initial.InitPostgres(ctx)
+	if err != nil {
+		logger.Error("initialize Postgres",
+			zap.String("Error", fmt.Sprintf("failed to initialize Postgres: %s", err.Error())))
+	}
+
+	redis, err := initial.InitRedis()
+	if err != nil {
+		logger.Error("initialize redisDb",
+			zap.String("Error", fmt.Sprintf("failed to initialize redisDb: %s", err.Error())))
+	}
+	defer redis.Close()
+
+	repos := repository.NewRepository(db, redis, logger)
+	services := service.NewService(repos, logger)
+	handlers := handler.NewHandler(services, logger)
+	srv := new(api.Server)
+
+	go func() {
+		if err = srv.Serve(viper.GetString("port"), handlers.InitRoutes()); err != nil {
+			logger.Error("error occurred on server shutting down", zap.Error(err))
+		}
+	}()
+	err = services.Order.LoadOrdersToCache(ctx)
+	if err != nil {
+		logger.Error("error load cache", zap.Error(err))
+	}
+	go nats.StartNatsClient(ctx, logger, services)
+
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, syscall.SIGTERM, syscall.SIGINT)
+	<-quit
+
+	logger.Info("WB Shutting Down")
+
+	if err = srv.Shutdown(context.Background()); err != nil {
+		logger.Error("error occurred on server shutting down: %s", zap.Error(err))
+	}
 }
