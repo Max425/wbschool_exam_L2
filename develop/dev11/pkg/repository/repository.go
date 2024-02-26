@@ -4,14 +4,14 @@ import (
 	"github.com/Max425/wbschool_exam_L2/tree/main/develop/dev11/pkg/model/core"
 	"github.com/jmoiron/sqlx"
 	"go.uber.org/zap"
+	"time"
 )
 
 type Event interface {
 	Create(Event *core.Event) (int, error)
-	//GetByUID(UID string) (*core.Event, error)
-	//GetCustomerEvents(customerUID string) ([]core.Event, error)
-	//GetAll() ([]core.Event, error)
-	//DeleteByUID(UID string) error
+	Update(Event *core.Event) error
+	Delete(id int) error
+	GetEvents(duration time.Duration) ([]core.Event, error)
 }
 
 type Repository struct {

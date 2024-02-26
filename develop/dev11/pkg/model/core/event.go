@@ -3,8 +3,9 @@ package core
 import "time"
 
 type Event struct {
-	Date   time.Time `json:"date"`
-	UserID string    `json:"user_id"`
-	ID     string    `json:"event_id"`
-	Title  string    `json:"title"`
+	ID         int       `json:"id" db:"id"`
+	Date       time.Time `json:"-" db:"date"`
+	StringDate string    `json:"date" db:"-"`
+	UserID     string    `json:"user_id" db:"user_id"`
+	Title      string    `json:"title" db:"title"`
 }
