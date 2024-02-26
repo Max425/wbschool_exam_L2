@@ -14,7 +14,7 @@ import (
 // @Produce  json
 // @Param input body core.Event true "New event"
 // @Success 200 {object} int
-// @Failure 400,409,500 {object} string
+// @Failure 400,500 {object} string
 // @Router /create_event [post]
 func (h *Handler) createEvent(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
@@ -47,7 +47,7 @@ func (h *Handler) createEvent(w http.ResponseWriter, r *http.Request) {
 // @Produce  json
 // @Param input body core.Event true "Updated event"
 // @Success 200 {object} string
-// @Failure 400,404,500 {object} string
+// @Failure 400,500 {object} string
 // @Router /update_event [post]
 func (h *Handler) updateEvent(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
@@ -81,7 +81,7 @@ func (h *Handler) updateEvent(w http.ResponseWriter, r *http.Request) {
 // @Produce  json
 // @Param input body core.Event true  "Event ID"
 // @Success 200 {object} string
-// @Failure 400,404,500 {object} string
+// @Failure 400,500 {object} string
 // @Router /delete_event [post]
 func (h *Handler) deleteEvent(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
@@ -114,7 +114,7 @@ func (h *Handler) deleteEvent(w http.ResponseWriter, r *http.Request) {
 // @Accept  json
 // @Produce  json
 // @Success 200 {object} []core.Event
-// @Failure 400,404,500 {object} string
+// @Failure 400,500 {object} string
 // @Router /events_for_day [get]
 func (h *Handler) getEventsForDay(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
@@ -136,7 +136,7 @@ func (h *Handler) getEventsForDay(w http.ResponseWriter, r *http.Request) {
 // @Accept  json
 // @Produce  json
 // @Success 200 {object} []core.Event
-// @Failure 400,404,500 {object} string
+// @Failure 400,500 {object} string
 // @Router /events_for_week [get]
 func (h *Handler) getEventsForWeek(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
@@ -158,7 +158,7 @@ func (h *Handler) getEventsForWeek(w http.ResponseWriter, r *http.Request) {
 // @Accept  json
 // @Produce  json
 // @Success 200 {object} []core.Event
-// @Failure 400,404,500 {object} string
+// @Failure 400,500 {object} string
 // @Router /events_for_month [get]
 func (h *Handler) getEventsForMonth(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
@@ -166,7 +166,7 @@ func (h *Handler) getEventsForMonth(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	events, err := h.services.GetEventsForTime(time.Hour * 24 * 7 * 30)
+	events, err := h.services.GetEventsForTime(time.Hour * 24 * 30)
 	if err != nil {
 		dto.NewErrorClientResponseDto(r.Context(), w, http.StatusInternalServerError, err.Error())
 		return

@@ -45,12 +45,6 @@
                             "type": "string"
                         }
                     },
-                    "409": {
-                        "description": "Conflict",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
@@ -96,12 +90,6 @@
                             "type": "string"
                         }
                     },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
@@ -135,12 +123,6 @@
                     },
                     "400": {
                         "description": "Bad Request",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
                         "schema": {
                             "type": "string"
                         }
@@ -182,12 +164,6 @@
                             "type": "string"
                         }
                     },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
@@ -221,12 +197,6 @@
                     },
                     "400": {
                         "description": "Bad Request",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
                         "schema": {
                             "type": "string"
                         }
@@ -272,12 +242,6 @@
                     },
                     "400": {
                         "description": "Bad Request",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
                         "schema": {
                             "type": "string"
                         }

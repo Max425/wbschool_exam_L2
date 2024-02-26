@@ -41,7 +41,7 @@ func easyjsonF642ad3eDecodeGithubComMax425WbschoolExamL2TreeMainDevelopDev11PkgM
 			out.ID = int(in.Int())
 		case "date":
 			if data := in.Raw(); in.Ok() {
-				dt, err := time.Parse("2006-01-02", string(data))
+				dt, err := time.Parse("2006-01-02", string(data[1:len(data)-1]))
 				out.Date = dt
 				in.AddError(err)
 			}
