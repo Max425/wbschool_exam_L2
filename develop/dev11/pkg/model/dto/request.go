@@ -5,6 +5,11 @@ import (
 	"net/http"
 )
 
+type RequestInfo struct {
+	Status  int
+	Message string
+}
+
 type SuccessClientResponseDto struct {
 	Result interface{} `json:"result"`
 }
@@ -14,25 +19,33 @@ type ErrorClientResponseDto struct {
 }
 
 func NewSuccessClientResponseDto(ctx context.Context, w http.ResponseWriter, statusCode int, payload interface{}) {
-	sendData(w, statusCode, SuccessClientResponseDto{
+	response := SuccessClientResponseDto{
 		Result: payload,
-	})
-}
+	}
 
-func NewErrorClientResponseDto(ctx context.Context, w http.ResponseWriter, statusCode int, payload interface{}) {
-	sendData(w, statusCode, ErrorClientResponseDto{
-		Error: payload,
-	})
-}
-
-func sendData(w http.ResponseWriter, statusCode int, response interface{}) {
 	responseJSON, err := response.MarshalJSON()
 	if err != nil {
 		http.Error(w, "Failed to marshal JSON", http.StatusInternalServerError)
 		return
 	}
+	sendData(w, statusCode, responseJSON)
+}
 
+func NewErrorClientResponseDto(ctx context.Context, w http.ResponseWriter, statusCode int, payload interface{}) {
+	response := ErrorClientResponseDto{
+		Error: payload,
+	}
+
+	responseJSON, err := response.MarshalJSON()
+	if err != nil {
+		http.Error(w, "Failed to marshal JSON", http.StatusInternalServerError)
+		return
+	}
+	sendData(w, statusCode, responseJSON)
+}
+
+func sendData(w http.ResponseWriter, statusCode int, responseJSON []byte) {
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
+	w.WriteHeader(statusCode)
 	w.Write(responseJSON)
 }
