@@ -1,5 +1,10 @@
 package main
 
+import (
+	"sort"
+	"strings"
+)
+
 /*
 === Поиск анаграмм по словарю ===
 
@@ -19,6 +24,27 @@ package main
 Программа должна проходить все тесты. Код должен проходить проверки go vet и golint.
 */
 
-func main() {
+func FindAnagrams(words []string) map[string][]string {
+	anagramSets := make(map[string][]string)
 
+	for _, word := range words {
+		// Приводим слово к нижнему регистру и сортируем его буквы
+		sortedWord := sortString(strings.ToLower(word))
+		// Добавляем слово в соответствующее множество анаграмм
+		anagramSets[sortedWord] = append(anagramSets[sortedWord], word)
+	}
+	// Удаляем множества из одного элемента
+	for key, value := range anagramSets {
+		if len(value) == 1 {
+			delete(anagramSets, key)
+		}
+	}
+
+	return anagramSets
+}
+
+func sortString(s string) string {
+	runes := []rune(s)
+	sort.Slice(runes, func(i, j int) bool { return runes[i] < runes[j] })
+	return string(runes)
 }

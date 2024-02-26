@@ -25,38 +25,27 @@ import (
 
 Функция должна проходить все тесты. Код должен проходить проверки go vet и golint.
 */
-func Unpacked(str string) (string, error) {
-	// если удается строку без ошибок преобразовать в инт, это некорректная строка
+func UnpackString(str string) (string, error) {
+	// если это число
 	if _, err := strconv.Atoi(str); err == nil {
 		return "", errors.New("некорректная строка")
 	}
 
-	var buf strings.Builder
-
-	// переменная для предыдущего символа
-	var prev rune
-	// флаг на эскейп последовательность
-	var isEscaped bool
+	var res strings.Builder // буфер для результата
+	var pred rune           // переменная для предыдущего символа
+	var isEscape bool       // флаг на эскейп последовательность
 	for _, char := range str {
-		if unicode.IsDigit(char) && !isEscaped {
-			// переводим чар в инт
-			num := int(char - '0')
-			// и делаем репит символа и пишем в буфер
-			repeat := strings.Repeat(string(prev), num-1)
-			buf.WriteString(repeat)
-			// иначе проверяет на возможность эскейп последовательности и обработываем и так же пишем в буфер
+		if !isEscape && unicode.IsDigit(char) {
+			num, _ := strconv.Atoi(string(char))
+			repeat := strings.Repeat(string(pred), num-1) // делаем репит символа
+			res.WriteString(repeat)                       // пишем в буфер
 		} else {
-			isEscaped = string(char) == "\\" && string(prev) != "\\"
-			if !isEscaped {
-				buf.WriteRune(char)
+			isEscape = string(char) == "\\" && string(pred) != "\\"
+			if !isEscape {
+				res.WriteRune(char)
 			}
-			prev = char
+			pred = char
 		}
 	}
-	// возвращаем строку
-	return buf.String(), nil
-}
-
-func main() {
-
+	return res.String(), nil
 }

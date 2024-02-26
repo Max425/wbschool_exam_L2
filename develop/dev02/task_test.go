@@ -5,25 +5,29 @@ import (
 	"testing"
 )
 
-func TestUnpacked(t *testing.T) {
-	testers := map[string]string{
-		"a4bc2d5e":  "aaaabccddddde",
-		"abcd":      "abcd",
-		"":          "",
-		"qwe\\4\\5": "qwe45",
-		"qwe\\45":   "qwe44444",
-		"qwe\\\\5":  "qwe\\\\\\\\\\",
+func TestUnpackString(t *testing.T) {
+	tests := []struct {
+		input          string
+		expected       string
+		expectedErrMsg string
+	}{
+		{"a4bc2d5e", "aaaabccddddde", ""},
+		{"abcd", "abcd", ""},
+		{"", "", ""},
+		{"qwe\\4\\5", "qwe45", ""},
+		{"qwe\\45", "qwe44444", ""},
+		{"qwe\\\\5", "qwe\\\\\\\\\\", ""},
+		{"45", "", "некорректная строка"},
 	}
-	for k, v := range testers {
-		actual, _ := Unpacked(k)
-		if actual != v {
-			t.Error("Excpected:", v, "Actual:", actual)
+
+	for _, test := range tests {
+		actual, err := UnpackString(test.input)
+		if test.expectedErrMsg != "" {
+			assert.NotNil(t, err)
+			assert.Equal(t, test.expectedErrMsg, err.Error())
+		} else {
+			assert.Nil(t, err)
+			assert.Equal(t, test.expected, actual)
 		}
 	}
-}
-
-func TestUnpackedError(t *testing.T) {
-	tester := "45432"
-	_, err := Unpacked(tester)
-	assert.NotNil(t, err)
 }
