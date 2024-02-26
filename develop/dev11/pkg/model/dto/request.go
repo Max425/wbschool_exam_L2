@@ -2,12 +2,12 @@ package dto
 
 import (
 	"context"
+	"github.com/Max425/wbschool_exam_L2/tree/main/develop/dev11/pkg/constants"
 	"net/http"
 )
 
 type RequestInfo struct {
-	Status  int
-	Message string
+	Status int
 }
 
 type SuccessClientResponseDto struct {
@@ -28,7 +28,7 @@ func NewSuccessClientResponseDto(ctx context.Context, w http.ResponseWriter, sta
 		http.Error(w, "Failed to marshal JSON", http.StatusInternalServerError)
 		return
 	}
-	sendData(w, statusCode, responseJSON)
+	sendData(ctx, w, statusCode, responseJSON)
 }
 
 func NewErrorClientResponseDto(ctx context.Context, w http.ResponseWriter, statusCode int, payload interface{}) {
@@ -41,10 +41,15 @@ func NewErrorClientResponseDto(ctx context.Context, w http.ResponseWriter, statu
 		http.Error(w, "Failed to marshal JSON", http.StatusInternalServerError)
 		return
 	}
-	sendData(w, statusCode, responseJSON)
+	sendData(ctx, w, statusCode, responseJSON)
 }
 
-func sendData(w http.ResponseWriter, statusCode int, responseJSON []byte) {
+func sendData(ctx context.Context, w http.ResponseWriter, statusCode int, responseJSON []byte) {
+	requestInfo, ok := ctx.Value(constants.KeyRequestInfo).(*RequestInfo)
+	if ok {
+		requestInfo.Status = statusCode
+	}
+
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(statusCode)
 	w.Write(responseJSON)

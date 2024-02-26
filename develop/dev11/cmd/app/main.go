@@ -5,6 +5,9 @@ import (
 	"fmt"
 	"github.com/Max425/wbschool_exam_L2/tree/main/develop/dev11/cmd"
 	"github.com/Max425/wbschool_exam_L2/tree/main/develop/dev11/pkg/api"
+	"github.com/Max425/wbschool_exam_L2/tree/main/develop/dev11/pkg/api/handler"
+	"github.com/Max425/wbschool_exam_L2/tree/main/develop/dev11/pkg/repository"
+	"github.com/Max425/wbschool_exam_L2/tree/main/develop/dev11/pkg/service"
 	"github.com/spf13/viper"
 	"go.uber.org/zap"
 	"log"
@@ -58,7 +61,7 @@ func main() {
 			zap.String("Error", fmt.Sprintf("failed to initialize Postgres: %s", err.Error())))
 	}
 
-	repos := repository.NewRepository(db, redis, logger)
+	repos := repository.NewRepository(db, logger)
 	services := service.NewService(repos, logger)
 	handlers := handler.NewHandler(services, logger)
 	srv := new(api.Server)

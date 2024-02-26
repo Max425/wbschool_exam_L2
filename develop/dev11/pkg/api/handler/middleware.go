@@ -2,13 +2,13 @@ package handler
 
 import (
 	"context"
+	"github.com/Max425/wbschool_exam_L2/tree/main/develop/dev11/pkg/constants"
 	"github.com/Max425/wbschool_exam_L2/tree/main/develop/dev11/pkg/model/dto"
+	"github.com/google/uuid"
+	"go.uber.org/zap"
 	"log"
 	"net/http"
-	"regexp"
 	"runtime/debug"
-	"strconv"
-	"strings"
 	"time"
 )
 
@@ -22,23 +22,21 @@ func (h *Handler) loggingMiddleware(next http.Handler) http.Handler {
 		ctx = context.WithValue(ctx, constants.KeyRequestId, uuid.NewString())
 		ctx = context.WithValue(ctx, constants.KeyRequestInfo, requestInfo)
 
-		method := r.Method
-		path := r.RequestURI
-		re := regexp.MustCompile(`\d+`)
-		customPath := strings.Split(re.ReplaceAllString(path, "1"), "?")[0]
-		h.metrics.Hits.WithLabelValues(customPath, method).Inc()
-
 		next.ServeHTTP(w, r.WithContext(ctx))
 
 		timing := time.Since(start)
 
+		requestInfo, ok := ctx.Value(constants.KeyRequestInfo).(*dto.RequestInfo)
+		var code int
+		if ok {
+			code = requestInfo.Status
+		}
+
 		childLogger.Info("Request handled",
-			zap.String("Method", method),
-			zap.String("RequestURI", path),
+			zap.Int("StatusCode", code),
+			zap.String("RequestURI", r.RequestURI),
 			zap.Duration("Time", timing),
 		)
-
-		h.metrics.Duration.WithLabelValues(strconv.Itoa(requestInfo.Status), customPath, method).Observe(timing.Seconds())
 	})
 }
 
