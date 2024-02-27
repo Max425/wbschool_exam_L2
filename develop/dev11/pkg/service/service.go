@@ -7,6 +7,8 @@ import (
 	"time"
 )
 
+//go:generate mockgen -source=service.go -destination=mocks/mock.go
+
 type Event interface {
 	CreateEvent(event *core.Event) (int, error)
 	UpdateEvent(event *core.Event) error

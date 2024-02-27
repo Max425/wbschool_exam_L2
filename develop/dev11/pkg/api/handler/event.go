@@ -28,7 +28,7 @@ func (h *Handler) createEvent(w http.ResponseWriter, r *http.Request) {
 	}
 	var event core.Event
 	err = event.UnmarshalJSON(body)
-	if err != nil {
+	if err != nil || event.UserID == "" {
 		dto.NewErrorClientResponseDto(r.Context(), w, http.StatusBadRequest, "invalid input body")
 		return
 	}
@@ -61,7 +61,7 @@ func (h *Handler) updateEvent(w http.ResponseWriter, r *http.Request) {
 	}
 	var event core.Event
 	err = event.UnmarshalJSON(body)
-	if err != nil {
+	if err != nil || event.UserID == "" || event.ID == 0 {
 		dto.NewErrorClientResponseDto(r.Context(), w, http.StatusBadRequest, "invalid input body")
 		return
 	}
@@ -95,7 +95,7 @@ func (h *Handler) deleteEvent(w http.ResponseWriter, r *http.Request) {
 	}
 	var event core.Event
 	err = event.UnmarshalJSON(body)
-	if err != nil {
+	if err != nil || event.ID == 0 {
 		dto.NewErrorClientResponseDto(r.Context(), w, http.StatusBadRequest, "invalid input body")
 		return
 	}

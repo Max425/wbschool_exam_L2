@@ -8,16 +8,16 @@ import (
 )
 
 type EventService struct {
-	repoEvent repository.Event
+	RepoEvent repository.Event
 	log       *zap.Logger
 }
 
 func NewEventService(repoEvent repository.Event, log *zap.Logger) *EventService {
-	return &EventService{repoEvent: repoEvent, log: log}
+	return &EventService{RepoEvent: repoEvent, log: log}
 }
 
 func (es *EventService) CreateEvent(event *core.Event) (int, error) {
-	id, err := es.repoEvent.Create(event)
+	id, err := es.RepoEvent.Create(event)
 	if err != nil {
 		es.log.Error("Failed to create event", zap.Error(err))
 		return 0, err
@@ -26,7 +26,7 @@ func (es *EventService) CreateEvent(event *core.Event) (int, error) {
 }
 
 func (es *EventService) UpdateEvent(event *core.Event) error {
-	err := es.repoEvent.Update(event)
+	err := es.RepoEvent.Update(event)
 	if err != nil {
 		es.log.Error("Failed to update event", zap.Error(err))
 		return err
@@ -35,7 +35,7 @@ func (es *EventService) UpdateEvent(event *core.Event) error {
 }
 
 func (es *EventService) DeleteEvent(id int) error {
-	err := es.repoEvent.Delete(id)
+	err := es.RepoEvent.Delete(id)
 	if err != nil {
 		es.log.Error("Failed to delete event", zap.Error(err))
 		return err
@@ -44,7 +44,7 @@ func (es *EventService) DeleteEvent(id int) error {
 }
 
 func (es *EventService) GetEventsForTime(date time.Duration) ([]core.Event, error) {
-	events, err := es.repoEvent.GetEvents(date)
+	events, err := es.RepoEvent.GetEvents(date)
 	if err != nil {
 		es.log.Error("Failed to get events for time", zap.Error(err))
 		return nil, err
