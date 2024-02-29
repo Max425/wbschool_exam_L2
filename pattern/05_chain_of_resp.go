@@ -7,7 +7,7 @@ import "fmt"
 Объяснить применимость паттерна, его плюсы и минусы, а также реальные примеры использования данного примера на практике.
 	https://en.wikipedia.org/wiki/Chain-of-responsibility_pattern
 
-Цепочка обязанностей — это поведенческий паттерн проектирования, который позволяет передавать запросы
+Цепочка вызовов (обязанностей) — это поведенческий паттерн проектирования, который позволяет передавать запросы
 последовательно по цепочке обработчиков. Каждый последующий обработчик решает, может ли он обработать
 запрос сам и стоит ли передавать запрос дальше по цепи.
 
@@ -52,11 +52,10 @@ func (r *Reception) execute(p *Patient) {
 		fmt.Println("Patient registration already done")
 		r.next.execute(p)
 		return
-	} else {
-		fmt.Println("Reception registering patient")
-		p.registrationDone = true
-		r.next.execute(p)
 	}
+	fmt.Println("Reception registering patient")
+	p.registrationDone = true
+	r.next.execute(p)
 }
 
 func (r *Reception) setNext(next Department) {
@@ -73,11 +72,10 @@ func (d *Doctor) execute(p *Patient) {
 		fmt.Println("Doctor checkup already done")
 		d.next.execute(p)
 		return
-	} else {
-		fmt.Println("Doctor checking patient")
-		p.doctorCheckUpDone = true
-		d.next.execute(p)
 	}
+	fmt.Println("Doctor checking patient")
+	p.doctorCheckUpDone = true
+	d.next.execute(p)
 }
 
 func (d *Doctor) setNext(next Department) {
@@ -94,11 +92,10 @@ func (m *Medical) execute(p *Patient) {
 		fmt.Println("Medicine already given to patient")
 		m.next.execute(p)
 		return
-	} else {
-		fmt.Println("Medical giving medicine to patient")
-		p.medicineDone = true
-		m.next.execute(p)
 	}
+	fmt.Println("Medical giving medicine to patient")
+	p.medicineDone = true
+	m.next.execute(p)
 }
 
 func (m *Medical) setNext(next Department) {
@@ -114,10 +111,9 @@ func (c *Cashier) execute(p *Patient) {
 	if p.paymentDone {
 		fmt.Println("Payment Done")
 		return
-	} else {
-		fmt.Println("Patient paying to the cashier")
-		p.paymentDone = true
 	}
+	fmt.Println("Patient paying to the cashier")
+	p.paymentDone = true
 }
 
 func (c *Cashier) setNext(next Department) {
@@ -127,19 +123,15 @@ func (c *Cashier) setNext(next Department) {
 func main() {
 	cashier := &Cashier{}
 
-	// Указываем следующий отдел (касса)
-	medical := &Medical{}
+	medical := &Medical{} // Указываем следующий отдел (касса)
 	medical.setNext(cashier)
 
-	// Указываем следующий отдел (медицинский)
-	doctor := &Doctor{}
+	doctor := &Doctor{} // Указываем следующий отдел (медицинский)
 	doctor.setNext(medical)
 
-	// Указываем следующий отдел (доктор)
-	reception := &Reception{}
+	reception := &Reception{} // Указываем следующий отдел (доктор)
 	reception.setNext(doctor)
 
 	patient := &Patient{name: "Dave"}
-	// Пациент пришёл в регистратуру
-	reception.execute(patient)
+	reception.execute(patient) // Пациент пришёл в регистратуру
 }

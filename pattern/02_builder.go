@@ -11,14 +11,14 @@ import "fmt"
 возможность использовать один и тот же код строительства для получения разных представлений объектов.
 
 Применимость
-	Когда вы хотите избавиться от «телескопического конструктора».
+	Когда вы хотите избавиться от «сложного конструктора».
 	Когда ваш код должен создавать разные представления какого-то объекта. Например, деревянные и железобетонные дома.
 	Когда вам нужно собирать сложные составные объекты
 
 Преимущества
-	Позволяет создавать продукты пошагово.
-	Позволяет использовать один и тот же код для создания различных продуктов.
-	Изолирует сложный код сборки продукта от его основной бизнес-логики.
+	Позволяет создавать объекты пошагово.
+	Позволяет использовать один и тот же код для создания различных объектов.
+	Изолирует сложный код сборки объекта от его основной бизнес-логики.
 
 Недостатки
 	Усложняет код программы из-за введения дополнительных классов.
@@ -33,8 +33,8 @@ type Builder interface {
 }
 
 func getBuilder(builderType string) Builder {
-	if builderType == "normal" {
-		return newNormalBuilder()
+	if builderType == "wood" {
+		return newWoodBuilder()
 	}
 
 	if builderType == "stone" {
@@ -43,29 +43,29 @@ func getBuilder(builderType string) Builder {
 	return nil
 }
 
-type NormalBuilder struct {
+type WoodBuilder struct {
 	windowType string
 	doorType   string
 	floor      int
 }
 
-func newNormalBuilder() *NormalBuilder {
-	return &NormalBuilder{}
+func newWoodBuilder() *WoodBuilder {
+	return &WoodBuilder{}
 }
 
-func (b *NormalBuilder) setWindowType() {
+func (b *WoodBuilder) setWindowType() {
 	b.windowType = "Wooden Window"
 }
 
-func (b *NormalBuilder) setDoorType() {
+func (b *WoodBuilder) setDoorType() {
 	b.doorType = "Wooden Door"
 }
 
-func (b *NormalBuilder) setNumFloor() {
+func (b *WoodBuilder) setNumFloor() {
 	b.floor = 2
 }
 
-func (b *NormalBuilder) getHouse() House {
+func (b *WoodBuilder) getHouse() House {
 	return House{
 		doorType:   b.doorType,
 		windowType: b.windowType,
@@ -131,15 +131,15 @@ func (d *Director) buildHouse() House {
 }
 
 func main() {
-	normalBuilder := getBuilder("normal")
+	woodBuilder := getBuilder("wood")
 	stoneBuilder := getBuilder("stone")
 
-	director := newDirector(normalBuilder)
-	normalHouse := director.buildHouse()
+	director := newDirector(woodBuilder)
+	woodHouse := director.buildHouse()
 
-	fmt.Printf("Normal House Door Type: %s\n", normalHouse.doorType)
-	fmt.Printf("Normal House Window Type: %s\n", normalHouse.windowType)
-	fmt.Printf("Normal House Num Floor: %d\n", normalHouse.floor)
+	fmt.Printf("Wood House Door Type: %s\n", woodHouse.doorType)
+	fmt.Printf("Wood House Window Type: %s\n", woodHouse.windowType)
+	fmt.Printf("Wood House Num Floor: %d\n", woodHouse.floor)
 
 	director.setBuilder(stoneBuilder)
 	stoneHouse := director.buildHouse()

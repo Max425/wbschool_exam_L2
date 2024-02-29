@@ -17,8 +17,11 @@ import (
 Программа должна корректно обрабатывать ошибки библиотеки: распечатывать их в STDERR и возвращать ненулевой код выхода в OS.
 Программа должна проходить проверки go vet и golint.
 */
+
+const address = "0.beevik-ntp.pool.ntp.org"
+
 func main() {
-	t, err := ntp.Time("0.beevik-ntp.pool.ntp.org")
+	t, err := ntp.Time(address)
 	if err != nil {
 		// В случае ошибки выводим её в STDERR и завершаем программу с ненулевым кодом возврата
 		fmt.Fprintln(os.Stderr, "Error:", err)

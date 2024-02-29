@@ -29,31 +29,12 @@ import (
 	Код может стать более сложным: В небольших программах добавление фабричных методов может привести к избыточности кода и усложнению его структуры
 */
 
-type Person interface {
-	GetName() string
-	GetPosition() string
-	GetSalary() int
-}
+type Person interface{}
 
 type person struct {
-	name     string
-	position string
-	salary   int
-}
-
-// Проверка, что персон имплементирует интерфейс
-var _ Person = &person{}
-
-func (p *person) GetName() string {
-	return p.name
-}
-
-func (p *person) GetPosition() string {
-	return p.position
-}
-
-func (p *person) GetSalary() int {
-	return p.salary
+	Name     string
+	Position string
+	Salary   int
 }
 
 type director struct {
@@ -64,10 +45,6 @@ type TeamLead struct {
 	person
 }
 
-type ProgrammerGo struct {
-	person
-}
-
 // GetPerson порождающий объекты метод, центр самого паттерна
 func GetPerson(worker string) (Person, error) {
 	switch strings.ToLower(worker) {
@@ -75,8 +52,6 @@ func GetPerson(worker string) (Person, error) {
 		return &director{}, nil
 	case "teamlead":
 		return &TeamLead{}, nil
-	case "programmergo":
-		return &ProgrammerGo{}, nil
 	}
 	return nil, errors.New("unknown type person")
 }
